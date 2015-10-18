@@ -11,7 +11,7 @@
 		076793541B7BAE6D00D2E4A3 /* PercentageSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 076793531B7BAE6D00D2E4A3 /* PercentageSpec.swift */; };
 		0793A6421B7BA47700B2FE31 /* PBValues.h in Headers */ = {isa = PBXBuildFile; fileRef = 0793A6411B7BA47700B2FE31 /* PBValues.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		0793A6481B7BA47700B2FE31 /* PBValues.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0793A63C1B7BA47700B2FE31 /* PBValues.framework */; };
-		4523535968BF1C5E4F5FA838 /* Pods_PBValuesTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F9EED1653C71CC668C1DCFF6 /* Pods_PBValuesTests.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		4523535968BF1C5E4F5FA838 /* Pods_PBValuesTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F9EED1653C71CC668C1DCFF6 /* Pods_PBValuesTests.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -196,6 +196,7 @@
 		0793A6331B7BA47700B2FE31 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 0700;
 				LastUpgradeCheck = 0640;
 				ORGANIZATIONNAME = "Parity Bits";
 				TargetAttributes = {
