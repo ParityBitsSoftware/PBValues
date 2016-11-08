@@ -13,14 +13,14 @@ public struct Percentage {
     public static let Zero = Percentage(numberValue: 0)
     public static let OneHundred = Percentage(numberValue: 1)
     
-    public let percentValue:NSDecimal
+    public let percentValue:Decimal
     public var decimalNumber:NSDecimalNumber {
         get {
             return NSDecimalNumber(decimal: percentValue)
         }
     }
     
-    init(percentValue:NSDecimal) {
+    init(percentValue:Decimal) {
         self.percentValue = percentValue
     }
     
@@ -35,9 +35,9 @@ extension Percentage : CustomStringConvertible {
     
     public var description: String {
         get {
-            let formatter = NSNumberFormatter()
-            formatter.numberStyle = .PercentStyle
-            return formatter.stringFromNumber(decimalNumber)!
+            let formatter = NumberFormatter()
+            formatter.numberStyle = .percent
+            return formatter.string(from: decimalNumber)!
         }
     }
     
@@ -47,15 +47,15 @@ extension Percentage : Comparable {}
 
 //Equatable
 public func ==(lhs:Percentage, rhs:Percentage) -> Bool {
-    return compare(lhs, rhs: rhs) == .OrderedSame
+    return compare(lhs, rhs: rhs) == .orderedSame
 }
 
 //Comparable
 public func <(lhs:Percentage, rhs:Percentage) -> Bool {
-    return compare(lhs, rhs: rhs) == .OrderedAscending
+    return compare(lhs, rhs: rhs) == .orderedAscending
 }
 
-private func compare(lhs:Percentage, rhs:Percentage) -> NSComparisonResult {
+private func compare(_ lhs:Percentage, rhs:Percentage) -> ComparisonResult {
     var lhsd = lhs.percentValue
     var rhsd = rhs.percentValue
     return NSDecimalCompare(&lhsd, &rhsd)
@@ -63,24 +63,24 @@ private func compare(lhs:Percentage, rhs:Percentage) -> NSComparisonResult {
 
 //Arithmatic operations
 
-private typealias PBDecimalOperation = ( result: UnsafeMutablePointer<NSDecimal>, lhs: UnsafePointer<NSDecimal>, rhs: UnsafePointer<NSDecimal>, roundingMode: NSRoundingMode) -> NSCalculationError
+private typealias PBDecimalOperation = ( _ result: UnsafeMutablePointer<Decimal>, _ lhs: UnsafePointer<Decimal>, _ rhs: UnsafePointer<Decimal>, _ roundingMode: NSDecimalNumber.RoundingMode) -> NSDecimalNumber.CalculationError
 
-private func PBAddPercent( result: UnsafeMutablePointer<NSDecimal>, lhs: UnsafePointer<NSDecimal>, rhs: UnsafePointer<NSDecimal>, roundingMode: NSRoundingMode) -> NSCalculationError {
-    var tempResult = NSDecimal()
+private func PBAddPercent( _ result: UnsafeMutablePointer<Decimal>, lhs: UnsafePointer<Decimal>, rhs: UnsafePointer<Decimal>, roundingMode: NSDecimalNumber.RoundingMode) -> NSDecimalNumber.CalculationError {
+    var tempResult = Decimal()
     
     let error = NSDecimalMultiply(&tempResult, lhs, rhs, roundingMode)
-    if error == NSCalculationError.NoError {
+    if error == NSDecimalNumber.CalculationError.noError {
         return NSDecimalAdd(result, lhs, &tempResult, roundingMode)
     } else {
         return error
     }
 }
 
-private func PBSubtractPercent( result: UnsafeMutablePointer<NSDecimal>, lhs: UnsafePointer<NSDecimal>, rhs: UnsafePointer<NSDecimal>, roundingMode: NSRoundingMode) -> NSCalculationError {
-    var tempResult = NSDecimal()
+private func PBSubtractPercent( _ result: UnsafeMutablePointer<Decimal>, lhs: UnsafePointer<Decimal>, rhs: UnsafePointer<Decimal>, roundingMode: NSDecimalNumber.RoundingMode) -> NSDecimalNumber.CalculationError {
+    var tempResult = Decimal()
     
     let error = NSDecimalMultiply(&tempResult, lhs, rhs, roundingMode)
-    if error == NSCalculationError.NoError {
+    if error == NSDecimalNumber.CalculationError.noError {
         return NSDecimalSubtract(result, lhs, &tempResult, roundingMode)
     } else {
         return error
@@ -107,50 +107,50 @@ public func /(lhs:Percentage, rhs:NSNumber) -> Percentage {
 }
 
 //NSDecimal and NSNumber
-public func *(lhs:NSNumber, rhs:Percentage) -> NSDecimal {
+public func *(lhs:NSNumber, rhs:Percentage) -> Decimal {
     return lhs.decimalValue * rhs
 }
 
-public func *(lhs:NSDecimal, rhs:Percentage) -> NSDecimal {
+public func *(lhs:Decimal, rhs:Percentage) -> Decimal {
     return operationToDecimal(lhs, rhs: rhs.percentValue, operation: NSDecimalMultiply)
 }
 
-public func /(lhs:NSNumber, rhs:Percentage) -> NSDecimal {
+public func /(lhs:NSNumber, rhs:Percentage) -> Decimal {
     return lhs.decimalValue / rhs
 }
 
-public func /(lhs:NSDecimal, rhs:Percentage) -> NSDecimal {
+public func /(lhs:Decimal, rhs:Percentage) -> Decimal {
     return operationToDecimal(lhs, rhs: rhs.percentValue, operation: NSDecimalDivide)
 }
 
-public func +(lhs:NSNumber, rhs:Percentage) -> NSDecimal {
+public func +(lhs:NSNumber, rhs:Percentage) -> Decimal {
     return lhs.decimalValue + rhs
 }
 
-public func +(lhs:NSDecimal, rhs:Percentage) -> NSDecimal {
+public func +(lhs:Decimal, rhs:Percentage) -> Decimal {
     return operationToDecimal(lhs, rhs: rhs.percentValue, operation: PBAddPercent)
 }
 
-public func -(lhs:NSNumber, rhs:Percentage) -> NSDecimal {
+public func -(lhs:NSNumber, rhs:Percentage) -> Decimal {
     return lhs.decimalValue - rhs
 }
 
-public func -(lhs:NSDecimal, rhs:Percentage) -> NSDecimal {
+public func -(lhs:Decimal, rhs:Percentage) -> Decimal {
     return operationToDecimal(lhs, rhs: rhs.percentValue, operation: PBSubtractPercent)
 }
 
 
 //Operator function
-private func operationToPercentage(lhs:NSDecimal, rhs:NSDecimal, operation:PBDecimalOperation) -> Percentage {
+private func operationToPercentage(_ lhs:Decimal, rhs:Decimal, operation:PBDecimalOperation) -> Percentage {
     return Percentage(percentValue: operationToDecimal(lhs, rhs: rhs, operation: operation))
 }
 
-private func operationToDecimal(lhs:NSDecimal, rhs:NSDecimal, operation:PBDecimalOperation) -> NSDecimal {
+private func operationToDecimal(_ lhs:Decimal, rhs:Decimal, operation:PBDecimalOperation) -> Decimal {
     var lhsd = lhs
     var rhsd = rhs
-    var result:NSDecimal = NSDecimal()
+    var result:Decimal = Decimal()
     
-    _ = operation(result:&result, lhs:&lhsd, rhs:&rhsd, roundingMode:NSRoundingMode.RoundBankers)
+    _ = operation(&result, &lhsd, &rhsd, NSDecimalNumber.RoundingMode.bankers)
     return result
 }
 

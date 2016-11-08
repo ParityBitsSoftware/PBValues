@@ -17,8 +17,8 @@ class PercentageSpec : QuickSpec {
         var numberValue:NSNumber!
         
         beforeEach {
-            let randomValue = Float(((random() % 100) + 1))
-            numberValue = NSNumber(float: randomValue / 100)
+            let randomValue = Float(((arc4random() % 100) + 1))
+            numberValue = NSNumber(value: randomValue / 100)
             subject = Percentage(numberValue: numberValue)
         }
         
@@ -35,17 +35,17 @@ class PercentageSpec : QuickSpec {
         
         describe("constant values") {
             it("has 0%") {
-                expect(Percentage.Zero.decimalNumber).to(equal(Percentage(numberValue: NSNumber(int: 0)).decimalNumber))
+                expect(Percentage.Zero.decimalNumber).to(equal(Percentage(numberValue: NSNumber(value: 0)).decimalNumber))
             }
             
             it("has 100%") {
-                expect(Percentage.OneHundred.decimalNumber).to(equal(Percentage(numberValue: NSNumber(int: 1)).decimalNumber))
+                expect(Percentage.OneHundred.decimalNumber).to(equal(Percentage(numberValue: NSNumber(value: 1)).decimalNumber))
             }
         }
         
         describe("Printable") {
             it("returns <value>%") {
-                expect(subject.description).to(equal("\(subject.decimalNumber.decimalNumberByMultiplyingByPowerOf10(2))%"))
+                expect(subject.description).to(equal("\(subject.decimalNumber.multiplying(byPowerOf10: 2))%"))
             }
         }
         
@@ -55,12 +55,12 @@ class PercentageSpec : QuickSpec {
             var greaterThanPercentage:Percentage!
             
             beforeEach {
-                equalPercentage = Percentage(numberValue: NSNumber(float: numberValue.floatValue))
+                equalPercentage = Percentage(numberValue: NSNumber(value: numberValue.floatValue))
                 
-                let lessNumber = NSNumber(float: numberValue.floatValue - 0.01)
+                let lessNumber = NSNumber(value: numberValue.floatValue - 0.01)
                 lessThanPercentage = Percentage(numberValue: lessNumber)
                 
-                let greaterNumber = NSNumber(float: numberValue.floatValue + 0.01)
+                let greaterNumber = NSNumber(value: numberValue.floatValue + 0.01)
                 greaterThanPercentage = Percentage(numberValue: greaterNumber)
             }
             
@@ -94,25 +94,25 @@ class PercentageSpec : QuickSpec {
                 var someNumberDecimal:NSDecimalNumber!
                 
                 beforeEach {
-                    otherPercentage = Percentage(numberValue:  NSNumber(float: Float((random() % 100)) / 100))
-                    someNumber = Int((random() % 10) + 2)
+                    otherPercentage = Percentage(numberValue:  NSNumber(value: Float((arc4random() % 100)) / 100))
+                    someNumber = Int((arc4random() % 10) + 2) as NSNumber!
                     someNumberDecimal = NSDecimalNumber(decimal: someNumber.decimalValue)
                 }
                 
                 it("adds two percentages together") {
-                    expect(subject + otherPercentage).to(equal(Percentage(numberValue: subject.decimalNumber.decimalNumberByAdding(otherPercentage.decimalNumber))))
+                    expect(subject + otherPercentage).to(equal(Percentage(numberValue: subject.decimalNumber.adding(otherPercentage.decimalNumber))))
                 }
                 
                 it("subtract one percentage from another") {
-                    expect(subject - otherPercentage).to(equal(Percentage(numberValue: subject.decimalNumber.decimalNumberBySubtracting(otherPercentage.decimalNumber))))
+                    expect(subject - otherPercentage).to(equal(Percentage(numberValue: subject.decimalNumber.subtracting(otherPercentage.decimalNumber))))
                 }
                 
                 it("multiplies the percentage by the given amount")  {
-                    expect(subject * someNumber).to(equal(Percentage(numberValue: subject.decimalNumber.decimalNumberByMultiplyingBy(someNumberDecimal))))
+                    expect(subject * someNumber).to(equal(Percentage(numberValue: subject.decimalNumber.multiplying(by: someNumberDecimal))))
                 }
                 
                 it("divides the percentage by the given amount") {
-                    expect(subject / someNumber).to(equal(Percentage(numberValue: subject.decimalNumber.decimalNumberByDividingBy(someNumberDecimal))))
+                    expect(subject / someNumber).to(equal(Percentage(numberValue: subject.decimalNumber.dividing(by: someNumberDecimal))))
                 }
                 
             }
@@ -121,23 +121,23 @@ class PercentageSpec : QuickSpec {
                 var someNumber:NSDecimalNumber!
                 
                 beforeEach {
-                    someNumber = NSDecimalNumber(integer: (random() % 1000) + 2)
+                    someNumber = NSDecimalNumber(value: (arc4random() % 1000) + 2)
                 }
                 
                 it("returns the percentage of a number for *") {
-                    expect(NSDecimalNumber(decimal: someNumber * subject)).to(equal(someNumber.decimalNumberByMultiplyingBy(subject.decimalNumber)))
+                    expect(NSDecimalNumber(decimal: someNumber * subject)).to(equal(someNumber.multiplying(by: subject.decimalNumber)))
                 }
                 
                 it("returns the value that the number is the percentage of for /") {
-                    expect(NSDecimalNumber(decimal: someNumber / subject)).to(equal(someNumber.decimalNumberByDividingBy(subject.decimalNumber)))
+                    expect(NSDecimalNumber(decimal: someNumber / subject)).to(equal(someNumber.dividing(by: subject.decimalNumber)))
                 }
                 
                 it("adds the amount of the percentage of the number for +") {
-                    expect(NSDecimalNumber(decimal: someNumber + subject)).to(equal(someNumber.decimalNumberByAdding(someNumber.decimalNumberByMultiplyingBy(subject.decimalNumber))))
+                    expect(NSDecimalNumber(decimal: someNumber + subject)).to(equal(someNumber.adding(someNumber.multiplying(by: subject.decimalNumber))))
                 }
                 
                 it("subtracts the amount of the percentage of the number for -") {
-                    expect(NSDecimalNumber(decimal: someNumber - subject)).to(equal(someNumber.decimalNumberBySubtracting(someNumber.decimalNumberByMultiplyingBy(subject.decimalNumber))))
+                    expect(NSDecimalNumber(decimal: someNumber - subject)).to(equal(someNumber.subtracting(someNumber.multiplying(by: subject.decimalNumber))))
                 }
             }
         }
